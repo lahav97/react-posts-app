@@ -1,12 +1,14 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
+import { ArrowLeft } from 'lucide-react'
 import { usePost } from '../hooks/usePost'
 import { useComments } from '../hooks/useComments'
+import { getLocalPosts } from '../hooks/useCreatePost'
 import { queryKeys } from '../lib/queryKeys'
+import CommentItem from '../components/comments/CommentItem'
 import Spinner from '../components/ui/Spinner'
 import ErrorState from '../components/ui/ErrorState'
 import EmptyState from '../components/ui/EmptyState'
-import { getLocalPosts } from '../hooks/useCreatePost'
 import type { Post } from '../types'
 
 export default function PostDetailPage() {
@@ -53,21 +55,30 @@ export default function PostDetailPage() {
   return (
     <div className="space-y-6">
       <Link to="/" className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline">
-        ← Back to posts
+        <ArrowLeft size={14} />
+        Back to posts
       </Link>
 
       <article className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        {post.isLocal && (
-          <span className="mb-2 inline-block rounded-md bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-800">
-            Your post
-          </span>
-        )}
+        <div className="mb-3 flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-700">
+            U{post.userId}
+          </div>
+          <div>
+            <p className="text-sm font-medium text-slate-900">User {post.userId}</p>
+            {post.isLocal && (
+              <span className="inline-block rounded-md bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-800">
+                Your post
+              </span>
+            )}
+          </div>
+        </div>
         <h1 className="mb-3 text-xl font-bold text-slate-900">{post.title}</h1>
         <p className="whitespace-pre-wrap leading-relaxed text-slate-700">{post.body}</p>
       </article>
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-500">
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-1 text-sm font-semibold text-slate-500">
           Comments {commentsQuery.data ? `(${commentsQuery.data.length})` : ''}
         </h2>
 
@@ -89,12 +100,14 @@ export default function PostDetailPage() {
             )}
 
             {commentsQuery.data && commentsQuery.data.length > 0 && (
-              <div className="space-y-3">
-                {commentsQuery.data.map((comment) => (
-                  <div key={comment.id} className="rounded-lg border border-slate-200 bg-white p-4">
-                    <p className="text-sm font-medium text-slate-900">{comment.name}</p>
-                    <p className="text-xs text-slate-400">{comment.email}</p>
-                    <p className="mt-2 text-sm text-slate-600">{comment.body}</p>
+              <div>
+                {commentsQuery.data.map((comment, index) => (
+                  <div
+                    key={comment.id}
+                    style={{ animationDelay: `${index * 60}ms`, animationFillMode: 'backwards' }}
+                    className="animate-[fadeInUp_0.3s_ease-in-out]"
+                  >
+                    <CommentItem comment={comment} />
                   </div>
                 ))}
               </div>

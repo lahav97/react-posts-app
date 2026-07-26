@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { ArrowLeft, Sparkles } from 'lucide-react'
 import { useCreatePost } from '../hooks/useCreatePost'
 
 const MIN_TITLE_LENGTH = 3
@@ -52,7 +53,8 @@ export default function NewPostPage() {
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <Link to="/" className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:underline">
-        ← Back to posts
+        <ArrowLeft size={14} />
+        Back to posts
       </Link>
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -95,9 +97,16 @@ export default function NewPostPage() {
             <button
               type="submit"
               disabled={createPost.isPending}
-              className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {createPost.isPending ? 'Creating…' : 'Create post'}
+              {createPost.isPending ? (
+                'Creating…'
+              ) : (
+                <>
+                  <Sparkles size={16} />
+                  Create post
+                </>
+              )}
             </button>
             <Link
               to="/"

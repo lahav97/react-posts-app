@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Plus } from 'lucide-react'
 import { usePosts } from '../hooks/usePosts'
 import PostCard from '../components/posts/PostCard'
 import SearchBar from '../components/posts/SearchBar'
@@ -50,11 +51,12 @@ export default function PostsPage() {
       )}
 
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-        <h1 className="text-2xl font-bold text-slate-900">Posts</h1>
+        <h1 className="text-2xl font-bold text-slate-900">All Posts</h1>
         <Link
           to="/new"
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+          className="flex items-center gap-1.5 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 px-4 py-2 text-sm font-medium text-white hover:opacity-90"
         >
+          <Plus size={16} />
           Add post
         </Link>
       </div>
@@ -74,7 +76,7 @@ export default function PostsPage() {
           description={search ? 'Try a different title.' : undefined}
         />
       ) : (
-        <div className="grid animate-[fadeIn_0.3s_ease-in-out] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid animate-[fadeIn_0.3s_ease-in-out] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
