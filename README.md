@@ -13,6 +13,13 @@ npm run dev
 
 The app runs at `http://localhost:5173`.
 
+To build and preview a production bundle:
+
+```bash
+npm run build
+npm run preview
+```
+
 ## 🛠️ Tech stack
 
 | | |
@@ -71,6 +78,8 @@ The layering is deliberate: `api` never imports React, `components` never fetch 
 - **Loading, error, and empty states** throughout — every fetch has all three handled explicitly, with retry where it makes sense
 - **Responsive** — checked on mobile (iPhone Safari) and desktop
 - **Accessible** — semantic HTML, keyboard focus and activation (Tab / Enter) on cards and forms, `aria-live` search feedback, screen-reader-friendly loading/error regions
+
+**Typical flow:** land on the list, search narrows it instantly with no network calls, click a card for the full post and its comments, or use *Add post* to create one — new posts appear at the top of the list immediately and survive a page refresh.
 
 ## 🧩 A design decision worth explaining: the fake API problem
 
