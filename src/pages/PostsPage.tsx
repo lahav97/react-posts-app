@@ -28,17 +28,24 @@ export default function PostsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-900">Posts</h1>
+      <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+        <h1 className="text-2xl font-bold text-slate-900">Posts</h1>
         <Link
           to="/new"
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-50"
+          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
         >
           Add post
         </Link>
       </div>
 
-      <SearchBar value={search} onChange={setSearch} />
+      <div className="space-y-2">
+        <SearchBar value={search} onChange={setSearch} />
+        <p className="text-sm text-slate-500" aria-live="polite">
+          {search
+            ? `Showing ${filteredPosts.length} of ${posts?.length ?? 0}`
+            : `Showing all ${posts?.length ?? 0} posts`}
+        </p>
+      </div>
 
       {filteredPosts.length === 0 ? (
         <EmptyState
@@ -46,7 +53,7 @@ export default function PostsPage() {
           description={search ? 'Try a different title.' : undefined}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid animate-[fadeIn_0.3s_ease-in-out] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredPosts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
