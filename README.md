@@ -1,75 +1,28 @@
-# React + TypeScript + Vite
+The layering is deliberate: `api` never imports React, `components` never fetch their own data, and `pages` are the only layer that connects the two. This keeps presentational components trivially testable and reusable.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## ✨ Features
 
-Currently, two official plugins are available:
+- **Browse posts** — responsive card grid (1 → 4 columns depending on viewport), fetched from `/posts`
+- **Search** — client-side, filters the already-fetched list by title as you type, with a live result count and a clear button
+- **Post detail** — full post content plus its comments, fetched in parallel
+- **Add a post** — form with validation, posts to `/posts`
+- **Loading, error, and empty states** throughout — every fetch has all three handled explicitly, with retry where it makes sense
+- **Responsive** — checked on mobile (iPhone Safari) and desktop
+- **Accessible** — semantic HTML, keyboard focus and activation (Tab / Enter) on cards and forms, `aria-live` search feedback, screen-reader-friendly loading/error regions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🧩 A design decision worth explaining: the fake API problem
 
-## React Compiler
+JSONPlaceholder doesn't persist writes. `POST /posts` always returns a fake `id: 101` and nothing is actually saved server-side. Left unhandled, this means: newly created posts vanish on refresh, and creating more than one post produces duplicate React keys (since every response reuses `id: 101`).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This app works around it deliberately:
 
-## Expanding the ESLint configuration
+- On successful creation, a real unique id is generated client-side (a negative number, so it can never collide with JSONPlaceholder's real ids 1–100)
+- The new post is injected directly into the TanStack Query cache for an instant UI update, and mirrored to `localStorage` so it survives a page refresh
+- On load, locally-created posts are merged back in alongside the fetched server posts
+- The post detail page checks the cache and `localStorage` before falling back to the network, so a locally-created post's detail page works correctly even on a direct refresh
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ⚠️ Known limitations
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+- Locally-created posts don't have real comments (the server never received them), so their detail page shows "no comments yet" rather than attempting a request that can't succeed.
+- `userId` on created posts is a hardcoded constant, since JSONPlaceholder has no authentication — in a real backend this would come from the session, not the client.
+- Search is client-side, per the assignment's requirement — appropriate here since the full dataset (100 posts) is small and already fetched; wouldn't scale to a much larger, server-held dataset without server-side search.
