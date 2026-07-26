@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useMemo, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { usePosts } from '../hooks/usePosts'
 import PostCard from '../components/posts/PostCard'
 import SearchBar from '../components/posts/SearchBar'
@@ -10,6 +10,18 @@ import EmptyState from '../components/ui/EmptyState'
 export default function PostsPage() {
   const [search, setSearch] = useState('')
   const { data: posts, isLoading, isError, error, refetch } = usePosts()
+
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [showToast, setShowToast] = useState(Boolean(location.state?.postCreated))
+
+  useEffect(() => {
+    if (!showToast) return
+    navigate(location.pathname, { replace: true, state: null })
+    const timer = setTimeout(() => setShowToast(false), 3000)
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const filteredPosts = useMemo(() => {
     if (!posts) return []
@@ -28,6 +40,15 @@ export default function PostsPage() {
 
   return (
     <div className="space-y-6">
+      {showToast && (
+        <div
+          role="status"
+          className="animate-[fadeIn_0.3s_ease-in-out] rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
+        >
+          Post created.
+        </div>
+      )}
+
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
         <h1 className="text-2xl font-bold text-slate-900">Posts</h1>
         <Link
