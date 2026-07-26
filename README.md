@@ -1,3 +1,65 @@
+# 📝 Posts hub
+
+A React + TypeScript app that browses, searches, and creates posts against the [JSONPlaceholder](https://jsonplaceholder.typicode.com/) API. Built as a skills assessment.
+
+## 🚀 Running locally
+
+```bash
+git clone https://github.com/lahav97/react-posts-app.git
+cd react-posts-app
+npm install
+npm run dev
+```
+
+The app runs at `http://localhost:5173`.
+
+## 🛠️ Tech stack
+
+| | |
+|---|---|
+| Language | TypeScript 5, strict mode |
+| Framework | React 18 |
+| Build tool | Vite |
+| Node | 20.x (built and tested on v20.19.0) |
+| Routing | React Router v6 (`createBrowserRouter`) |
+| Server state | TanStack Query |
+| HTTP client | Axios |
+| Styling | Tailwind CSS v4 |
+| Icons | lucide-react |
+| Linting | ESLint |
+
+### Why TanStack Query over a hand-rolled Context
+
+Fetching posts, a single post, and its comments each needs its own loading / error / data state. Doing that with `useState` + `useEffect` + Context means writing and wiring that lifecycle by hand for every request. TanStack Query gives it declaratively — `useQuery` returns `data`, `isLoading`, `isError`, and a typed `error`, plus caching, deduplication, and retries, without any of it being hand-written. The only piece of state this app actually owns manually is the search input.
+
+## 📜 Available scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the dev server |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run the test suite |
+
+## 🏗️ Project structure
+
+```
+src/
+├── api/          # Plain async functions that call JSONPlaceholder (no React)
+├── hooks/        # TanStack Query hooks wrapping the api layer
+├── lib/          # Query client config, query key definitions
+├── types/        # Shared TypeScript interfaces
+├── components/
+│   ├── ui/         # Generic, reusable primitives (Spinner, ErrorState, EmptyState)
+│   ├── posts/       # Post-specific presentational components
+│   └── comments/    # Comment-specific presentational components
+├── pages/        # One file per route; the only components that call hooks
+├── App.tsx       # Shared shell (header + router outlet)
+├── router.tsx    # Route definitions
+└── main.tsx      # Entry point — providers + router
+```
+
 The layering is deliberate: `api` never imports React, `components` never fetch their own data, and `pages` are the only layer that connects the two. This keeps presentational components trivially testable and reusable.
 
 ## ✨ Features
