@@ -12,6 +12,7 @@ const AVATAR_COLORS = [
   'bg-emerald-100 text-emerald-800',
 ]
 
+// Deterministic hash so each commenter's avatar color stays consistent across renders.
 function colorForName(name: string): string {
   let hash = 0
   for (let i = 0; i < name.length; i++) {

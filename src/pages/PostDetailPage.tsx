@@ -18,11 +18,13 @@ export default function PostDetailPage() {
 
   const isValidId = Number.isInteger(postId) && postId !== 0
 
+  // Skip the network request if the post is already in the query cache or was created locally.
   const memoryPosts = queryClient.getQueryData<Post[]>(queryKeys.posts.all)
   const localPosts = getLocalPosts()
   const cachedPost =
     memoryPosts?.find((p) => p.id === postId) ?? localPosts.find((p) => p.id === postId)
 
+  // Passing NaN disables the query (see usePost/useComments) when we already have the data.
   const postQuery = usePost(isValidId && !cachedPost && postId > 0 ? postId : NaN)
   const commentsQuery = useComments(postId > 0 ? postId : NaN)
 

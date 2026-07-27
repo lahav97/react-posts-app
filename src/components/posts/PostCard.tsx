@@ -9,6 +9,8 @@ export default function PostCard({ post }: PostCardProps) {
   return (
     <Link
       to={`/posts/${post.id}`}
+      // Local (user-created) posts get a solid indigo left border; server posts get a
+      // muted one that only picks up color on hover.
       className={`group flex h-full flex-col rounded-xl border-l-4 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
         post.isLocal
           ? 'border-l-indigo-500 border-y border-r border-y-slate-200 border-r-slate-200'

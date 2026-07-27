@@ -10,6 +10,7 @@ export function usePosts() {
     queryFn: async () => {
       const serverPosts = await getPosts()
       const localPosts = getLocalPosts()
+      // Local posts are prepended so newly created posts appear first.
       return [...localPosts, ...serverPosts]
     },
   })

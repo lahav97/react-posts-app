@@ -7,6 +7,7 @@ export const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+// Maps HTTP status codes to user-facing messages.
 function messageForStatus(status: number): string {
   if (status === 404) return 'We could not find what you were looking for.'
   if (status === 429) return 'Too many requests. Please wait a moment and try again.'

@@ -7,6 +7,7 @@ export function usePost(id: number) {
   return useQuery<Post, ApiError>({
     queryKey: queryKeys.posts.detail(id),
     queryFn: () => getPostById(id),
+    // Pass NaN (or any non-positive value) to skip the fetch, e.g. when the post is already cached.
     enabled: Number.isInteger(id) && id > 0,
   })
 }

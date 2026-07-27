@@ -20,6 +20,7 @@ export default function PostsPage() {
 
   useEffect(() => {
     if (!showToast) return
+    // Clear the navigation state so the toast doesn't reappear on refresh or back navigation.
     navigate(location.pathname, { replace: true, state: null })
     const timer = setTimeout(() => setShowToast(false), 3000)
     return () => clearTimeout(timer)

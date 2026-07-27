@@ -3,6 +3,8 @@ import { createPost } from '../api/posts'
 import { queryKeys } from '../lib/queryKeys'
 import type { Post, NewPostInput, ApiError } from '../types'
 
+// JSONPlaceholder doesn't persist created posts server-side, so we keep our own
+// copy in localStorage and merge it back in on every load (see usePosts).
 const LOCAL_POSTS_KEY = 'localPosts'
 
 function saveLocalPost(post: Post) {
@@ -28,6 +30,7 @@ export function useCreatePost() {
     onSuccess: (serverPost, variables) => {
       const localPost: Post = {
         ...variables,
+        // Negative IDs keep local posts from colliding with server-assigned (positive) IDs.
         id: -(Date.now() + Math.floor(Math.random() * 1000)),
         userId: serverPost.userId,
         isLocal: true,
