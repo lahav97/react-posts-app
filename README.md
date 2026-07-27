@@ -47,7 +47,6 @@ Fetching posts, a single post, and its comments each needs its own loading / err
 | `npm run build` | Type-check and build for production |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint |
-| `npm test` | Run the test suite |
 
 ## 🏗️ Project structure
 
