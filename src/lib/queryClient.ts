@@ -5,7 +5,7 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1000,
       retry: 1,
-      refetchOnWindowFocus: false, // Disable automatic refetching when the window regains focus because the data wont change
+      refetchOnWindowFocus: false, // JSONPlaceholder's data never changes, so refetching on focus is unnecessary
     },
   },
 })

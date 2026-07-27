@@ -28,7 +28,7 @@ export default function CommentItem({ comment }: CommentItemProps) {
         <div
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-medium ${colorForName(comment.name)}`}
         >
-          {comment.name.charAt(0).toUpperCase()}
+          {comment.name.charAt(0).toUpperCase() || '?'}
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-slate-900">{comment.name}</p>

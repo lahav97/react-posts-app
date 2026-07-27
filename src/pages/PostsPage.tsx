@@ -7,9 +7,11 @@ import SearchBar from '../components/posts/SearchBar'
 import Spinner from '../components/ui/Spinner'
 import ErrorState from '../components/ui/ErrorState'
 import EmptyState from '../components/ui/EmptyState'
+import { useDebounce } from '../hooks/useDebounce'
 
 export default function PostsPage() {
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 300)
   const { data: posts, isLoading, isError, error, refetch } = usePosts()
 
   const location = useLocation()
@@ -26,10 +28,10 @@ export default function PostsPage() {
 
   const filteredPosts = useMemo(() => {
     if (!posts) return []
-    const term = search.trim().toLowerCase()
+    const term = debouncedSearch.trim().toLowerCase()
     if (!term) return posts
     return posts.filter((post) => post.title.toLowerCase().includes(term))
-  }, [posts, search])
+  }, [posts, debouncedSearch])
 
   if (isLoading) {
     return <Spinner label="Loading posts" />
@@ -54,7 +56,7 @@ export default function PostsPage() {
         <h1 className="text-2xl font-bold text-slate-900">All Posts</h1>
         <Link
           to="/new"
-          className="flex items-center gap-1.5 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
         >
           <Plus size={16} />
           Add post
@@ -64,7 +66,7 @@ export default function PostsPage() {
       <div className="space-y-2">
         <SearchBar value={search} onChange={setSearch} />
         <p className="text-sm text-slate-500" aria-live="polite">
-          {search
+          {debouncedSearch
             ? `Showing ${filteredPosts.length} of ${posts?.length ?? 0}`
             : `Showing all ${posts?.length ?? 0} posts`}
         </p>
@@ -72,8 +74,8 @@ export default function PostsPage() {
 
       {filteredPosts.length === 0 ? (
         <EmptyState
-          title={search ? 'No posts match your search' : 'No posts yet'}
-          description={search ? 'Try a different title.' : undefined}
+          title={debouncedSearch ? 'No posts match your search' : 'No posts yet'}
+          description={debouncedSearch ? 'Try a different title.' : undefined}
         />
       ) : (
         <div className="grid animate-[fadeIn_0.3s_ease-in-out] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

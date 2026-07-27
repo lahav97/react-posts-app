@@ -28,7 +28,7 @@ export function useCreatePost() {
     onSuccess: (serverPost, variables) => {
       const localPost: Post = {
         ...variables,
-        id: -Date.now(),
+        id: -(Date.now() + Math.floor(Math.random() * 1000)),
         userId: serverPost.userId,
         isLocal: true,
       }
